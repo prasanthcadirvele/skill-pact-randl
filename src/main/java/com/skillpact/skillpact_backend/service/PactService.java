@@ -37,6 +37,14 @@ public class PactService {
             throw new RuntimeException("Solde Insuffisant pour le staking. Points disponibles: " + user.getWalletPoints() + ", Points à staker: " + stakedPoints);
         }
 
+        // Statut et deadline par défaut si non renseignés
+        if (pact.getStatus() == null) {
+            pact.setStatus("ACTIVE");
+        }
+        if (pact.getDeadline() == null) {
+            pact.setDeadline(java.time.LocalDateTime.now().plusDays(7));
+        }
+
         // Déduire les points du portefeuille de l'utilisateur
         user.setWalletPoints(user.getWalletPoints() - stakedPoints);
         userRepository.save(user);
