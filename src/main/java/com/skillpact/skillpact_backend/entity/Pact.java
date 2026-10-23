@@ -1,5 +1,6 @@
 package com.skillpact.skillpact_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,8 +34,9 @@ public class Pact {
     private LocalDateTime createdAt;
 
     // Relation : Plusieurs pactes appartiennent à un seul utilisateur
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties("pacts")
     private User user;
 
     @PrePersist
