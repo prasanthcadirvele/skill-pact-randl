@@ -2,6 +2,8 @@ package com.skillpact.skillpact_backend.service;
 
 import com.skillpact.skillpact_backend.entity.Pact;
 import com.skillpact.skillpact_backend.entity.User;
+import com.skillpact.skillpact_backend.exception.InsufficientFundsException;
+import com.skillpact.skillpact_backend.exception.ResourceNotFoundException;
 import com.skillpact.skillpact_backend.repository.PactRepository;
 import com.skillpact.skillpact_backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -29,12 +31,12 @@ public class PactService {
     public Pact createPact(Long userId, Pact pact) {
         // Vérifier si l'utilisateur existe
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec l'ID: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé avec l'ID: " + userId));
 
         // Vérifier si l'utilisateur a assez de points pour le staking
         int stakedPoints = pact.getStakedPoints();
         if (user.getWalletPoints() < stakedPoints) {
-            throw new RuntimeException("Solde Insuffisant pour le staking. Points disponibles: " + user.getWalletPoints() + ", Points à staker: " + stakedPoints);
+            throw new InsufficientFundsException("Solde Insuffisant pour le staking. Points disponibles: " + user.getWalletPoints() + ", Points à staker: " + stakedPoints);
         }
 
         // Statut et deadline par défaut si non renseignés
